@@ -10,14 +10,16 @@ namespace Spryker\Glue\ServicePointsBackendApi\Processor\ResponseBuilder;
 use ArrayObject;
 use Generated\Shared\Transfer\GlueResponseTransfer;
 
-interface ServicePointResponseBuilderInterface
+interface ErrorResponseBuilderInterface
 {
     /**
-     * @param \ArrayObject<array-key, \Generated\Shared\Transfer\ServicePointTransfer> $servicePointTransfers
+     * @param \ArrayObject<int, \Generated\Shared\Transfer\ErrorTransfer> $errorTransfers
+     * @param string|null $localeName
      *
      * @return \Generated\Shared\Transfer\GlueResponseTransfer
      */
-    public function createServicePointResponse(
-        ArrayObject $servicePointTransfers
+    public function createErrorResponse(
+        ArrayObject $errorTransfers,
+        ?string $localeName = null
     ): GlueResponseTransfer;
 }

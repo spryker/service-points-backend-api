@@ -8,7 +8,7 @@
 namespace SprykerTest\Glue\ServicePointsBackendApi\Plugin;
 
 use Codeception\Test\Unit;
-use Spryker\Glue\ServicePointsBackendApi\Plugin\GlueBackendApiApplication\ServicePointsBackendResourcePlugin;
+use Spryker\Glue\ServicePointsBackendApi\Plugin\GlueBackendApiApplication\ServicePointAddressesBackendResourcePlugin;
 use SprykerTest\Glue\ServicePointsBackendApi\ServicePointsBackendApiTester;
 
 /**
@@ -18,17 +18,17 @@ use SprykerTest\Glue\ServicePointsBackendApi\ServicePointsBackendApiTester;
  * @group Glue
  * @group ServicePointsBackendApi
  * @group Plugin
- * @group ServicePointsBackendResourcePluginTest
+ * @group ServicePointAddressesBackendResourcePluginTest
  * Add your own group annotations below this line
  */
-class ServicePointsBackendResourcePluginTest extends Unit
+class ServicePointAddressesBackendResourcePluginTest extends Unit
 {
     /**
-     * @uses \Spryker\Glue\ServicePointsBackendApi\ServicePointsBackendApiConfig::RESOURCE_SERVICE_POINTS
+     * @uses \Spryker\Glue\ServicePointsBackendApi\ServicePointsBackendApiConfig::RESOURCE_SERVICE_POINT_ADDRESSES
      *
      * @var string
      */
-    protected const RESOURCE_SERVICE_POINTS = 'service-points';
+    protected const RESOURCE_SERVICE_POINT_ADDRESSES = 'service-point-addresses';
 
     /**
      * @var \SprykerTest\Glue\ServicePointsBackendApi\ServicePointsBackendApiTester
@@ -41,13 +41,13 @@ class ServicePointsBackendResourcePluginTest extends Unit
     public function testGetTypeShouldReturnCorrectType(): void
     {
         // Arrange
-        $servicePointsBackendResourcePlugin = new ServicePointsBackendResourcePlugin();
+        $servicePointAddressesBackendResourcePlugin = new ServicePointAddressesBackendResourcePlugin();
 
         // Act
-        $type = $servicePointsBackendResourcePlugin->getType();
+        $type = $servicePointAddressesBackendResourcePlugin->getType();
 
         // Assert
-        $this->assertSame(static::RESOURCE_SERVICE_POINTS, $type);
+        $this->assertSame(static::RESOURCE_SERVICE_POINT_ADDRESSES, $type);
     }
 
     /**
@@ -56,13 +56,13 @@ class ServicePointsBackendResourcePluginTest extends Unit
     public function testReturnsCorrectGlueResourceMethodCollection(): void
     {
         // Arrange
-        $servicePointsBackendResourcePlugin = new ServicePointsBackendResourcePlugin();
+        $servicePointAddressesBackendResourcePlugin = new ServicePointAddressesBackendResourcePlugin();
 
         // Act
-        $glueResourceMethodCollectionTransfer = $servicePointsBackendResourcePlugin->getDeclaredMethods();
+        $glueResourceMethodCollectionTransfer = $servicePointAddressesBackendResourcePlugin->getDeclaredMethods();
 
         // Assert
-        $this->assertNotNull($glueResourceMethodCollectionTransfer->getGet());
+        $this->assertNull($glueResourceMethodCollectionTransfer->getGet());
         $this->assertNotNull($glueResourceMethodCollectionTransfer->getGetCollection());
         $this->assertNotNull($glueResourceMethodCollectionTransfer->getPost());
         $this->assertNotNull($glueResourceMethodCollectionTransfer->getPatch());

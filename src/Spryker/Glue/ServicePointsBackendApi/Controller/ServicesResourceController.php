@@ -7,6 +7,7 @@
 
 namespace Spryker\Glue\ServicePointsBackendApi\Controller;
 
+use Generated\Shared\Transfer\ApiServicesRequestAttributesTransfer;
 use Generated\Shared\Transfer\GlueRequestTransfer;
 use Generated\Shared\Transfer\GlueResponseTransfer;
 use Spryker\Glue\Kernel\Backend\Controller\AbstractController;
@@ -14,13 +15,13 @@ use Spryker\Glue\Kernel\Backend\Controller\AbstractController;
 /**
  * @method \Spryker\Glue\ServicePointsBackendApi\ServicePointsBackendApiFactory getFactory()
  */
-class ServicePointsResourceController extends AbstractController
+class ServicesResourceController extends AbstractController
 {
     /**
      * @Glue({
      *     "getCollection": {
      *          "summary": [
-     *              "Retrieves service points collection."
+     *              "Retrieves services collection."
      *          ],
      *          "parameters": [
      *              {
@@ -39,7 +40,7 @@ class ServicePointsResourceController extends AbstractController
      *                  "ref": "Sort"
      *              }
      *          ],
-     *          "responseAttributesClassName": "Generated\\Shared\\Transfer\\ApiServicePointsAttributesTransfer",
+     *          "responseAttributesClassName": "Generated\\Shared\\Transfer\\ApiServicesAttributesTransfer",
      *          "responses": {
      *              "400": "Bad Request",
      *              "403": "Unauthorized request"
@@ -54,15 +55,15 @@ class ServicePointsResourceController extends AbstractController
     public function getCollectionAction(GlueRequestTransfer $glueRequestTransfer): GlueResponseTransfer
     {
         return $this->getFactory()
-            ->createServicePointReader()
-            ->getServicePointCollection($glueRequestTransfer);
+            ->createServiceReader()
+            ->getServiceCollection($glueRequestTransfer);
     }
 
     /**
      * @Glue({
      *     "getResourceById": {
      *          "summary": [
-     *              "Retrieves service point by uuid."
+     *              "Retrieves service by uuid."
      *          ],
      *          "parameters": [
      *              {
@@ -75,11 +76,11 @@ class ServicePointsResourceController extends AbstractController
      *                  "ref": "Fields"
      *              }
      *          ],
-     *          "responseAttributesClassName": "Generated\\Shared\\Transfer\\ApiServicePointsAttributesTransfer",
+     *          "responseAttributesClassName": "Generated\\Shared\\Transfer\\ApiServicesAttributesTransfer",
      *          "responses": {
      *              "400": "Bad Request",
      *              "403": "Unauthorized request",
-     *              "404": "Not Found"
+     *              "404": "Not found"
      *          }
      *     }
      * })
@@ -91,15 +92,15 @@ class ServicePointsResourceController extends AbstractController
     public function getAction(GlueRequestTransfer $glueRequestTransfer): GlueResponseTransfer
     {
         return $this->getFactory()
-            ->createServicePointReader()
-            ->getServicePoint($glueRequestTransfer);
+            ->createServiceReader()
+            ->getService($glueRequestTransfer);
     }
 
     /**
      * @Glue({
      *     "post": {
      *          "summary": [
-     *              "Creates service point."
+     *              "Creates service."
      *          ],
      *          "parameters": [
      *              {
@@ -109,8 +110,8 @@ class ServicePointsResourceController extends AbstractController
      *                  "ref": "ContentType"
      *              }
      *          ],
-     *          "responseAttributesClassName": "Generated\\Shared\\Transfer\\ApiServicePointsAttributesTransfer",
-     *          "requestAttributesClassName": "Generated\\Shared\\Transfer\\ApiServicePointsAttributesTransfer",
+     *          "responseAttributesClassName": "Generated\\Shared\\Transfer\\ApiServicesAttributesTransfer",
+     *          "requestAttributesClassName": "Generated\\Shared\\Transfer\\ApiServicesRequestAttributesTransfer",
      *          "responses": {
      *              "400": "Bad Request",
      *              "403": "Unauthorized request"
@@ -118,22 +119,25 @@ class ServicePointsResourceController extends AbstractController
      *     }
      * })
      *
+     * @param \Generated\Shared\Transfer\ApiServicesRequestAttributesTransfer $apiServicesRequestAttributesTransfer
      * @param \Generated\Shared\Transfer\GlueRequestTransfer $glueRequestTransfer
      *
      * @return \Generated\Shared\Transfer\GlueResponseTransfer
      */
-    public function postAction(GlueRequestTransfer $glueRequestTransfer): GlueResponseTransfer
-    {
+    public function postAction(
+        ApiServicesRequestAttributesTransfer $apiServicesRequestAttributesTransfer,
+        GlueRequestTransfer $glueRequestTransfer
+    ): GlueResponseTransfer {
         return $this->getFactory()
-            ->createServicePointCreator()
-            ->createServicePoint($glueRequestTransfer);
+            ->createServiceCreator()
+            ->createService($apiServicesRequestAttributesTransfer, $glueRequestTransfer);
     }
 
     /**
      * @Glue({
      *     "patch": {
      *          "summary": [
-     *              "Updates service point."
+     *              "Updates service."
      *          ],
      *          "parameters": [
      *              {
@@ -146,8 +150,8 @@ class ServicePointsResourceController extends AbstractController
      *                  "ref": "Fields"
      *              }
      *          ],
-     *          "responseAttributesClassName": "Generated\\Shared\\Transfer\\ApiServicePointsAttributesTransfer",
-     *          "requestAttributesClassName": "Generated\\Shared\\Transfer\\ApiServicePointsAttributesTransfer",
+     *          "responseAttributesClassName": "Generated\\Shared\\Transfer\\ApiServicesAttributesTransfer",
+     *          "requestAttributesClassName": "Generated\\Shared\\Transfer\\ApiServicesRequestAttributesTransfer",
      *          "responses": {
      *              "400": "Bad Request",
      *              "403": "Unauthorized request",
@@ -156,14 +160,17 @@ class ServicePointsResourceController extends AbstractController
      *     }
      * })
      *
+     * @param \Generated\Shared\Transfer\ApiServicesRequestAttributesTransfer $apiServicesRequestAttributesTransfer
      * @param \Generated\Shared\Transfer\GlueRequestTransfer $glueRequestTransfer
      *
      * @return \Generated\Shared\Transfer\GlueResponseTransfer
      */
-    public function patchAction(GlueRequestTransfer $glueRequestTransfer): GlueResponseTransfer
-    {
+    public function patchAction(
+        ApiServicesRequestAttributesTransfer $apiServicesRequestAttributesTransfer,
+        GlueRequestTransfer $glueRequestTransfer
+    ): GlueResponseTransfer {
         return $this->getFactory()
-            ->createServicePointUpdater()
-            ->updateServicePoint($glueRequestTransfer);
+            ->createServiceUpdater()
+            ->updateService($apiServicesRequestAttributesTransfer, $glueRequestTransfer);
     }
 }

@@ -15,11 +15,11 @@ use Spryker\Glue\ServicePointsBackendApi\ServicePointsBackendApiConfig;
 /**
  * @method \Spryker\Glue\ServicePointsBackendApi\ServicePointsBackendApiFactory getFactory()
  */
-class ServicePointAddressesByServicePointsBackendResourceRelationshipPlugin extends AbstractPlugin implements ResourceRelationshipPluginInterface
+class ServiceTypesByServicesBackendResourceRelationshipPlugin extends AbstractPlugin implements ResourceRelationshipPluginInterface
 {
     /**
      * {@inheritDoc}
-     * - Adds `service-point-addresses` resources as a relationship to `service-points` resources.
+     * - Adds `service-types` resources as a relationship to `services` resources.
      *
      * @api
      *
@@ -31,13 +31,13 @@ class ServicePointAddressesByServicePointsBackendResourceRelationshipPlugin exte
     public function addRelationships(array $resources, GlueRequestTransfer $glueRequestTransfer): void
     {
         $this->getFactory()
-            ->createServicePointAddressByServicePointRelationshipExpander()
-            ->addServicePointAddressesResourceRelationships($resources, $glueRequestTransfer);
+            ->createServiceTypeByServiceRelationshipExpander()
+            ->addServiceTypesResourceRelationships($resources, $glueRequestTransfer);
     }
 
     /**
      * {@inheritDoc}
-     * - Returns resource type for service point addresses.
+     * - Returns resource type for service types.
      *
      * @api
      *
@@ -45,6 +45,6 @@ class ServicePointAddressesByServicePointsBackendResourceRelationshipPlugin exte
      */
     public function getRelationshipResourceType(): string
     {
-        return ServicePointsBackendApiConfig::RESOURCE_SERVICE_POINT_ADDRESSES;
+        return ServicePointsBackendApiConfig::RESOURCE_SERVICE_TYPES;
     }
 }

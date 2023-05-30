@@ -5,14 +5,14 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace Spryker\Glue\ServicePointsBackendApi\Processor\Expander;
+namespace Spryker\Glue\ServicePointsBackendApi\Processor\Expander\ServicePoint;
 
 use Generated\Shared\Transfer\GlueRequestTransfer;
 
-interface ServicePointRelationshipExpanderInterface
+interface ServicePointAddressByServicePointRelationshipExpanderInterface
 {
     /**
-     * @param array<\Generated\Shared\Transfer\GlueResourceTransfer> $glueResourceTransfers
+     * @param list<\Generated\Shared\Transfer\GlueResourceTransfer> $glueResourceTransfers
      * @param \Generated\Shared\Transfer\GlueRequestTransfer $glueRequestTransfer
      *
      * @return void

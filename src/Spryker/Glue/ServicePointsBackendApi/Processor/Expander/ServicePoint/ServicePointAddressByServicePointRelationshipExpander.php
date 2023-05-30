@@ -5,7 +5,7 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace Spryker\Glue\ServicePointsBackendApi\Processor\Expander;
+namespace Spryker\Glue\ServicePointsBackendApi\Processor\Expander\ServicePoint;
 
 use Generated\Shared\Transfer\GlueRelationshipTransfer;
 use Generated\Shared\Transfer\GlueRequestTransfer;
@@ -15,10 +15,12 @@ use Generated\Shared\Transfer\ServicePointAddressConditionsTransfer;
 use Generated\Shared\Transfer\ServicePointAddressCriteriaTransfer;
 use Generated\Shared\Transfer\ServicePointAddressTransfer;
 use Spryker\Glue\ServicePointsBackendApi\Dependency\Facade\ServicePointsBackendApiToServicePointFacadeInterface;
+use Spryker\Glue\ServicePointsBackendApi\Processor\Extractor\GlueResourceExtractorInterface;
+use Spryker\Glue\ServicePointsBackendApi\Processor\Filter\GlueResourceFilterInterface;
 use Spryker\Glue\ServicePointsBackendApi\Processor\Mapper\ServicePointAddressMapperInterface;
 use Spryker\Glue\ServicePointsBackendApi\ServicePointsBackendApiConfig;
 
-class ServicePointRelationshipExpander implements ServicePointRelationshipExpanderInterface
+class ServicePointAddressByServicePointRelationshipExpander implements ServicePointAddressByServicePointRelationshipExpanderInterface
 {
     /**
      * @var \Spryker\Glue\ServicePointsBackendApi\Dependency\Facade\ServicePointsBackendApiToServicePointFacadeInterface
@@ -31,15 +33,31 @@ class ServicePointRelationshipExpander implements ServicePointRelationshipExpand
     protected ServicePointAddressMapperInterface $servicePointAddressMapper;
 
     /**
+     * @var \Spryker\Glue\ServicePointsBackendApi\Processor\Filter\GlueResourceFilterInterface
+     */
+    protected GlueResourceFilterInterface $glueResourceFilter;
+
+    /**
+     * @var \Spryker\Glue\ServicePointsBackendApi\Processor\Extractor\GlueResourceExtractorInterface
+     */
+    protected GlueResourceExtractorInterface $glueResourceExtractor;
+
+    /**
      * @param \Spryker\Glue\ServicePointsBackendApi\Dependency\Facade\ServicePointsBackendApiToServicePointFacadeInterface $servicePointFacade
      * @param \Spryker\Glue\ServicePointsBackendApi\Processor\Mapper\ServicePointAddressMapperInterface $servicePointAddressMapper
+     * @param \Spryker\Glue\ServicePointsBackendApi\Processor\Filter\GlueResourceFilterInterface $glueResourceFilter
+     * @param \Spryker\Glue\ServicePointsBackendApi\Processor\Extractor\GlueResourceExtractorInterface $glueResourceExtractor
      */
     public function __construct(
         ServicePointsBackendApiToServicePointFacadeInterface $servicePointFacade,
-        ServicePointAddressMapperInterface $servicePointAddressMapper
+        ServicePointAddressMapperInterface $servicePointAddressMapper,
+        GlueResourceFilterInterface $glueResourceFilter,
+        GlueResourceExtractorInterface $glueResourceExtractor
     ) {
         $this->servicePointFacade = $servicePointFacade;
         $this->servicePointAddressMapper = $servicePointAddressMapper;
+        $this->glueResourceFilter = $glueResourceFilter;
+        $this->glueResourceExtractor = $glueResourceExtractor;
     }
 
     /**
@@ -52,18 +70,20 @@ class ServicePointRelationshipExpander implements ServicePointRelationshipExpand
         array $glueResourceTransfers,
         GlueRequestTransfer $glueRequestTransfer
     ): void {
-        $servicePointUuids = $this->extractServicePointUuidsFromGlueResourceTransfers($glueResourceTransfers);
+        $servicePointGlueResourceTransfers = $this->glueResourceFilter
+            ->filterGlueResourcesByType(
+                $glueResourceTransfers,
+                ServicePointsBackendApiConfig::RESOURCE_SERVICE_POINTS,
+            );
+        $servicePointUuids = $this->glueResourceExtractor
+            ->extractUuidsFromGlueResourceTransfers($servicePointGlueResourceTransfers);
         $servicePointAddressCollectionTransfer = $this->servicePointFacade->getServicePointAddressCollection(
             $this->createServicePointAddressCriteria($servicePointUuids),
         );
 
         $servicePointAddressTransfersIndexedByServicePointUuid = $this->getServicePointAddressesIndexedByServicePointUuid($servicePointAddressCollectionTransfer);
 
-        foreach ($glueResourceTransfers as $glueResourceTransfer) {
-            if (!$this->isApplicableResource($glueResourceTransfer)) {
-                continue;
-            }
-
+        foreach ($servicePointGlueResourceTransfers as $glueResourceTransfer) {
             $servicePointUuid = $glueResourceTransfer->getIdOrFail();
 
             if (!isset($servicePointAddressTransfersIndexedByServicePointUuid[$servicePointUuid])) {
@@ -103,36 +123,6 @@ class ServicePointRelationshipExpander implements ServicePointRelationshipExpand
         }
 
         return $servicePointAddressTransfersIndexedByServicePointUuid;
-    }
-
-    /**
-     * @param list<\Generated\Shared\Transfer\GlueResourceTransfer> $glueResourceTransfers
-     *
-     * @return list<string>
-     */
-    protected function extractServicePointUuidsFromGlueResourceTransfers(array $glueResourceTransfers): array
-    {
-        $servicePointUuids = [];
-        foreach ($glueResourceTransfers as $glueResourceTransfer) {
-            if (!$this->isApplicableResource($glueResourceTransfer)) {
-                continue;
-            }
-
-            $servicePointUuids[] = $glueResourceTransfer->getIdOrFail();
-        }
-
-        return $servicePointUuids;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\GlueResourceTransfer $glueResourceTransfer
-     *
-     * @return bool
-     */
-    protected function isApplicableResource(
-        GlueResourceTransfer $glueResourceTransfer
-    ): bool {
-        return $glueResourceTransfer->getType() === ServicePointsBackendApiConfig::RESOURCE_SERVICE_POINTS;
     }
 
     /**
